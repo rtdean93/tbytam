@@ -1,0 +1,52 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Install, update and uninstall functions for the gardens_features module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function gardens_features_install() {
+  // Adjust the weight of the module so it runs after most others.
+  db_update('system')
+    ->fields(array(
+      'weight' => 10,
+    ))
+    ->condition('name', 'gardens_features')
+    ->execute();
+}
+
+/**
+ * Adjust the weight of the module so it runs after most others.
+ */
+function gardens_features_update_7000() {
+  db_update('system')
+    ->fields(array(
+      'weight' => 10,
+    ))
+    ->condition('name', 'gardens_features')
+    ->execute();
+}
+
+/**
+ * Override some default media variables.
+ */
+function gardens_features_update_7001() {
+  variable_set('wysiwyg_allowed_types', array('image', 'video'));
+}
+
+/**
+ * Migrate all deprecated "small" file field formats to "thumbnail".
+ */
+function gardens_features_update_7002() {
+  // As part of Styles 1.x -> 2.x upgrade, media_youtube no longer adds a
+  // "small" style. Reuse the gardens_features_image_style_save() function,
+  // intended for custom image style name changes, to migrate any stray
+  // references.
+  if (function_exists('gardens_features_image_style_save')) {
+    gardens_features_image_style_save(array('old_name' => 'small', 'name' => 'thumbnail'));
+  }
+}

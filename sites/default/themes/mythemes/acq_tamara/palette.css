@@ -1,0 +1,322 @@
+
+body {
+  color: #00dfa5;
+  background-color: #ffffff;
+}
+
+h1 {
+  color: #111111;
+}
+
+h2 {
+  color: #cccccc;
+}
+
+h3 {
+  color: #f5f5f5;
+}
+
+a:hover {
+  color: #00dfa5;
+}
+
+.form-submit {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+.site-name {
+  color: #ffffff;
+}
+
+.site-slogan {
+  color: #ffffff;
+}
+
+.wrapper-footer {
+  color: #ffffff;
+}
+
+.deco-page-top .layer-a {
+  background-color: #d4470a;
+}
+
+.sidebar.left {
+}
+
+.sidebar.right {
+}
+
+.stack-messages a {
+  color: #00dfa5;
+}
+
+.menu-dropdown .menu .menu {
+  border-color: #cccccc;
+}
+
+.menu-dropdown .menu .expanded a {
+  border-color: transparent;
+}
+
+.menu-dropdown .menu .menu a {
+  color: #111111;
+}
+
+#block-feedback-feedback a {
+  background-color: #cccccc;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+th {
+}
+
+td {
+}
+
+.stack-messages,.stack-messages ul,.stack-messages ul li {
+}
+
+.wrapper-content .stack {
+  background-color: #ffffff;
+}
+
+#block-feedback-feedback a:hover {
+  background-color: #00dfa5;
+}
+
+.controls.buttons a.activeSlide {
+  background-color: #fff45c;
+}
+
+.stack-navigation .menu .expanded:hover a {
+  background-color: #ffffff;
+}
+
+.stack-navigation .menu .expanded:hover li a {
+  background-color: transparent;
+}
+
+.stack-navigation .menu .menu {
+  background-color: #ffffff;
+}
+
+a {
+  color: #d4470a;
+}
+
+a:link {
+  color: #d4470a;
+}
+
+a:visited {
+  color: #d4470a;
+}
+
+.node-faq-item h2.faq-item-inline-question-title a:active {
+  color: #d4470a;
+}
+
+a:focus {
+  color: #00dfa5;
+}
+
+a:active {
+  color: #00dfa5;
+}
+
+.active {
+  color: #00dfa5;
+}
+
+li a.active {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a:link {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a:visited {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a:hover {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a:focus {
+  color: #00dfa5;
+}
+
+.stack-breadcrumb a:active {
+  color: #00dfa5;
+}
+
+.stack-messages a:link {
+  color: #00dfa5;
+}
+
+.stack-messages a:visited {
+  color: #00dfa5;
+}
+
+.wrapper-header {
+  color: #ffffff;
+}
+
+.wrapper-header a {
+  color: #ffffff;
+}
+
+.wrapper-header a:visited {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .expanded:hover > a {
+  color: #cccccc;
+  border-color: #cccccc;
+}
+
+.menu-dropdown .menu .active-trail > a {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .active-trail:hover > a {
+  color: #cccccc;
+}
+
+.menu-dropdown .menu .menu a:visited {
+  color: #111111;
+}
+
+.menu-dropdown .menu .menu a:focus {
+  color: #111111;
+}
+
+.menu-dropdown .menu .menu a:active {
+  color: #d4470a;
+}
+
+.menu-dropdown .menu .menu li:hover > a {
+  color: #cccccc;
+}
+
+.menu-dropdown .menu .menu a.active {
+  color: #d4470a;
+}
+
+.menu-dropdown .menu .menu li:hover > a.active {
+  color: #cccccc;
+}
+
+.menu-dropdown .menu .menu .active-trail > a {
+  color: #d4470a;
+}
+
+.menu-dropdown .menu .menu .active-trail:hover > a {
+  color: #cccccc;
+}
+
+.wrapper-footer h2 {
+  color: #f5f5f5;
+}
+
+.wrapper-footer h3 {
+  color: #ffffff;
+}
+
+.wrapper-footer a {
+  color: #ffffff;
+}
+
+.wrapper-footer a:link {
+  color: #ffffff;
+}
+
+.wrapper-footer a:visited {
+  color: #ffffff;
+}
+
+.wrapper-header a:hover {
+  color: #ffffff;
+}
+
+.wrapper-header a:focus {
+  color: #ffffff;
+}
+
+.wrapper-header a:active {
+  color: #ffffff;
+}
+
+.wrapper-header a.active {
+  color: #ffffff;
+}
+
+.stack-navigation a {
+  color: #fff45c;
+}
+
+.stack-navigation a:visited {
+  color: #fff45c;
+}
+
+.stack-navigation a:hover {
+  color: #ffffff;
+}
+
+.stack-navigation a:focus {
+  color: #ffffff;
+}
+
+.stack-navigation a:active {
+  color: #ffffff;
+}
+
+.stack-navigation a.active {
+  color: #ffffff;
+}
+
+h5 {
+  color: #111111;
+}
+
+h6 {
+  color: #111111;
+}
+
+fieldset legend {
+  color: #111111;
+}
+
+fieldset label {
+  color: #111111;
+}
+
+.sidebar h2 {
+  color: #f5f5f5;
+}
+
+h4 {
+  color: #f5f5f5;
+}
+
+th.active {
+}
+
+tr.even td {
+}
+
+table tbody tr.even td.active {
+}
+
+table tbody tr.odd td.active {
+}
+
+

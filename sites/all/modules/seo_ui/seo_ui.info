@@ -1,0 +1,4 @@
+name = Unified SEO UI
+description = Glues together various SEO modules in a unified interface.
+core = 7.x
+files[] = seo_ui.module

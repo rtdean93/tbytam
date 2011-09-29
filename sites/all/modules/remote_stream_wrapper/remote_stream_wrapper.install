@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Remote Stream Wrapper module.
+ *
+ * @ingroup remote_stream_wrapper
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function remote_stream_wrapper_schema() {
+  $schema['remote_stream_wrapper_url'] = array(
+    'description' => 'The base table for information about remote URLs.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary key; the sha256 hash of the URL.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'url' => array(
+        'description' => 'The URL.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,331 @@
+
+body {
+  color: #cccccc;
+  background-color: #121212;
+}
+
+h1 {
+  color: #62a734;
+}
+
+h2 {
+  color: #ffffff;
+}
+
+h3 {
+  color: #d3fec1;
+}
+
+h4 {
+  color: #ffffff;
+}
+
+blockquote {
+  color: #d3fec1;
+}
+
+.content strong {
+  color: #ffffff;
+}
+
+.stack {
+}
+
+ul {
+  color: #d3fec1;
+}
+
+.menu-dropdown ul.menu .menu li {
+  border-color: #cccccc;
+  background-color: #121212;
+}
+
+.menu-dropdown .menu .menu .first > a {
+  background-color: transparent;
+}
+
+.stack-preheader {
+  background-color: #121212;
+}
+
+.stack-preheader .menu li a {
+}
+
+.wrapper-header {
+  background-color: #62a734;
+}
+
+.rotating-banner .rb-slide {
+  border-color: #ffffff;
+}
+
+.stack-precontent {
+}
+
+.stack-prefooter {
+}
+
+.stack-content-inner {
+}
+
+#forum tbody {
+}
+
+#block-feedback-feedback a {
+  color: #ffffff;
+  background-color: #62a734;
+}
+
+.faq-item-question-label {
+  color: #121212;
+  background-color: #62a734;
+}
+
+.node-faq-item .content {
+  background-color: #121212;
+}
+
+.page-testimonials .simpleview .content .node-testimonial {
+  color: #d3fec1;
+}
+
+.node + .node-article,.node + .node-blog {
+  background-color: transparent;
+}
+
+.node .meta {
+  color: #d3fec1;
+}
+
+.node-unpublished {
+}
+
+.wysiwyg-allowed {
+}
+
+.messages,.messages ul,.messages ul li {
+}
+
+a {
+  color: #00a5ff;
+}
+
+a:visited {
+  color: #00a5ff;
+}
+
+li a.active {
+  color: #00a5ff;
+}
+
+button {
+  color: #00a5ff;
+  border-color: #cccccc;
+}
+
+input.form-submit {
+  color: #00a5ff;
+  border-color: #cccccc;
+}
+
+.rotating-banner a {
+  color: #00a5ff;
+}
+
+a:active {
+  color: #ffffff;
+}
+
+h2 a {
+  color: #ffffff;
+}
+
+h2 a:link {
+  color: #ffffff;
+}
+
+h2 a:visited {
+  color: #ffffff;
+}
+
+.sidebar h2 {
+  color: #ffffff;
+}
+
+#site-name a {
+  color: #ffffff;
+}
+
+.stack-content-inner .block h2 {
+  color: #ffffff;
+}
+
+.menu li a:active {
+  color: #ffffff;
+}
+
+.menu li .active {
+  color: #ffffff;
+}
+
+.breadcrumb a:hover {
+  color: #ffffff;
+}
+
+#forum th {
+  color: #ffffff;
+}
+
+#forum th a {
+  color: #ffffff;
+}
+
+table th {
+  color: #ffffff;
+}
+
+.faq-item-inline-question-title a {
+  color: #ffffff;
+}
+
+a:hover {
+  color: #d3fec1;
+}
+
+.stack-navigation .menu a:hover {
+  color: #d3fec1;
+}
+
+h2 a:hover {
+  color: #d3fec1;
+}
+
+h5 {
+  color: #d3fec1;
+}
+
+h6 {
+  color: #d3fec1;
+}
+
+.stack-slogan {
+  color: #d3fec1;
+}
+
+dt {
+  color: #d3fec1;
+}
+
+intro {
+  color: #d3fec1;
+}
+
+block {
+  color: #d3fec1;
+}
+
+.breadcrumb {
+  color: #d3fec1;
+}
+
+.breadcrumb a {
+  color: #d3fec1;
+}
+
+#forum tr td.last-reply {
+  color: #d3fec1;
+}
+
+#forum tr td.created {
+  color: #d3fec1;
+}
+
+li a.active:hover {
+  color: #d3fec1;
+}
+
+.comment h3 a {
+  color: #d3fec1;
+}
+
+.field-name-field-testimonial-author {
+  color: #d3fec1;
+}
+
+.block h2 {
+  color: #62a734;
+}
+
+.controls.numbers a.activeSlide {
+  color: #62a734;
+}
+
+#site-name a:hover {
+  color: #cccccc;
+}
+
+.field-name-field-testimonial-affiliation {
+  color: #cccccc;
+}
+
+.menu li a {
+  color: #cccccc;
+}
+
+.rotating-banner {
+}
+
+.controls.buttons a.activeSlide {
+  background-color: #62a734;
+}
+
+.comment.odd {
+  background-color: #121212;
+}
+
+#block-feedback-feedback a:hover {
+}
+
+.stack-navigation ul.menu .menu li {
+  border-color: #ffffff;
+}
+
+.comment,.block-aggregator ul li {
+}
+
+.menu-dropdown .menu .expanded:hover > a {
+  color: #d3fec1;
+}
+
+.menu-dropdown .menu .active-trail > a {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .active-trail:hover > a {
+  color: #d3fec1;
+}
+
+.menu-dropdown .menu .menu li:hover > a {
+  color: #d3fec1;
+}
+
+.menu-dropdown .menu .menu a.active {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .menu li:hover > .active {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .menu .active-trail > a {
+  color: #ffffff;
+}
+
+.menu-dropdown .menu .menu .active-trail:hover > a {
+  color: #d3fec1;
+}
+
+pre {
+}
+
+

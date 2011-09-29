@@ -1,0 +1,13 @@
+; $Id$
+name = Form builder Webform UI
+description = Form builder integration for the Webform module.
+core = 7.x
+dependencies[] = form_builder
+dependencies[] = webform
+
+; Information added by drupal.org packaging script on 2011-02-25
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "form_builder"
+datestamp = "1296536400"
+

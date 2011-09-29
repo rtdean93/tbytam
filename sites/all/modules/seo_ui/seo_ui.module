@@ -1,0 +1,226 @@
+<?php
+
+/**
+ * @file
+ * A module that glues together various SEO modules in a unified interface
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function seo_ui_form_alter(&$form, $form_state, $form_id) {
+  // Alter settings forms
+  if (strpos($form_id, 'settings_form') !== FALSE) {
+    switch ($form_id) {
+      // Redirect
+      case 'redirect_settings_form' :
+        _seo_ui_alter_redirect_settings($form, $form_state, $form_id);
+        break;
+      default :
+        break;
+    }    
+  }
+  // Create a vertical tab for node edit forms
+  if (strpos($form_id, '_node_form') !== FALSE) {
+    // Establish the SEO vertical tab
+    $form['seo_vtab'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Search engine optimization (SEO)'),
+      '#group' => 'additional_settings',
+      '#attached' => array(
+        'js' => array(
+          'vertical-tabs' => drupal_get_path('module', 'seo_ui') . '/js/seo_ui.js',
+        ),
+      ),
+      '#attributes' => array(
+        'class' => array(
+          'seo-settings'
+        )
+      ),
+      '#weight' => 50,
+      'path' => array(),
+    );
+  }
+  // Alter node or taxonomy term forms
+  if (strpos($form_id, '_node_form') !== FALSE || $form_id === 'taxonomy_form_term') {
+    // Add CSS to style the admin forms
+    drupal_add_css(drupal_get_path('module', 'seo_ui') . '/css/seo_ui.admin.css');
+    
+    // Path
+    _seo_ui_alter_path($form, $form_state, $form_id);
+
+    // Redirect
+    _seo_ui_alter_redirect($form, $form_state, $form_id);
+  }
+}
+
+/**
+ * Implements hook_field_extra_fields_alter().
+ *
+ * The Pathauto and Redirect modules expose an "extra field" to the Manage
+ * Fields UI for re-ordering their form elements. Remove this, since it causes
+ * more confusion than benefit, especially when working with vertical tabs or
+ * other groupings.
+ *
+ * @see http://drupal.org/node/1244470 and http://drupal.org/node/1244494.
+ */
+function seo_ui_field_extra_fields_alter(&$info) {
+  foreach ($info as $entity_type => $entity_type_info) {
+    foreach ($entity_type_info as $bundle => $bundle_info) {
+      foreach (array('path', 'redirect') as $key) {
+        if (isset($bundle_info['form'][$key])) {
+          unset($info[$entity_type][$bundle]['form'][$key]);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function seo_ui_node_presave($node) {
+  // If the path has changed, the Redirect module might automatically create a
+  // redirect for the old path. To cut down on excessive redirects, disable such
+  // behavior if the old path is to an unpublished node.
+  if (module_exists('redirect') && variable_get('redirect_auto_redirect', TRUE) && !empty($node->original) && isset($node->original->nid) && !$node->original->status && !isset($node->path['redirect'])) {
+    // Suppressing a redirect is so easy for a non-automatic alias.
+    $node->path['redirect'] = FALSE;
+
+    // For Pathauto automatic aliases, it's not as easy. When Pathauto is
+    // configured to replace a prior alias with a new one, path_save() gets
+    // called deep within Pathauto's internals, with no opportunity to add the
+    // 'redirect' => FALSE option to it. For this case, delete the old alias
+    // here, to suppress the Redirect module from treating it as an update that
+    // needs a redirect.
+    if (module_exists('pathauto') && !empty($node->path['pathauto'])) {
+      module_load_include('inc', 'pathauto');
+      if (variable_get('pathauto_update_action', PATHAUTO_UPDATE_ACTION_DELETE) === PATHAUTO_UPDATE_ACTION_DELETE) {
+        $uri = entity_uri('node', $node);
+        $original_uri = entity_uri('node', $node->original);
+        if ($uri['path'] == $original_uri['path'] && $node->language == $node->original->language) {
+          // @todo We shouldn't call a private function. But really, the whole
+          //   Pathauto updating existing published aliases logic needs to be
+          //   redesigned.
+          if ($existing_alias_data = _pathauto_existing_alias_data($uri['path'], $node->language)) {
+            $new_alias = pathauto_create_alias('node', 'return', $uri['path'], array('node' => $node), $node->type, $node->language);
+            if ($new_alias != $existing_alias_data['alias']) {
+              path_delete($existing_alias_data['pid']);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Path and Pathauto node alters
+ */
+function _seo_ui_alter_path(&$form, $form_state, $form_id) {
+  if (module_exists('path')) {
+    // Pathauto
+    if (module_exists('pathauto')) {
+      $form['path']['pathauto']['#description'] = t('Generates an automatic alias based on the title. To control the format of generated aliases, <a href="/admin/config/search/path/patterns">see URL alias patterns</a>');
+    }
+    $form['path']['#title'] = t('URL Settings');
+    $form['path']['#weight'] = 0;
+    $form['path']['#collapsed'] = 0;
+    if (isset($form['path']['alias'])) {
+      $form['path']['alias']['#weight'] = 2;
+      $form['path']['alias']['#description'] = t('Specify an alternative URL by which this content can be accessed. <b>Use a relative path and remove the trailing slash</b>');
+    }
+    // Remove unwanted properties
+    unset($form['path']['#attached']['js']);
+    // Add the new tab to the vertical SEO tab if it exists.
+    if (isset($form['seo_vtab'])) {
+      // ungroup the path item
+      unset($form['path']['#group']);
+      // Move the form and unset the original
+      $form['seo_vtab']['path'] = $form['path'];
+      unset($form['path']);
+    }
+  }
+}
+
+/**
+ * Redirect node alter
+ */
+function _seo_ui_alter_redirect(&$form, $form_state, $form_id) {
+  if (module_exists('redirect')) {
+    if (isset($form['redirect']['list']) && !empty($form['redirect']['list']['#rows'])) {
+      $form['redirect']['list']['#caption'] = t('The following URLs point to this URL');
+      if (isset($form['redirect']['actions'])) {
+        $form['redirect']['actions']['#weight'] = 5;
+        $form['redirect']['actions']['#links']['add']['title'] = t('Add URL redirect');
+      }
+      // See http://drupal.org/node/1244524 for fixing Redirect module to order
+      // action above the list.
+      $form['redirect']['list']['#weight'] = 10;
+      $form['redirect']['#title'] = t('URL Redirects');
+      
+      // Remove unwanted properties
+      unset($form['redirect']['#attached']['js']);
+      unset($form['redirect']['#description']);
+  
+      // Add the new tab to the vertical SEO tab if it exists.
+      if (isset($form['seo_vtab'])) {
+        // ungroup the redirect item
+        unset($form['redirect']['#group']);
+        // Move the form and unset the original
+        $form['seo_vtab']['path']['redirect'] = $form['redirect'];
+        if (!isset($form['seo_vtab']['path']['redirect']['#parents'])) {
+          $form['seo_vtab']['path']['redirect']['#parents'] = array('redirect');
+        }
+        unset($form['redirect']);
+      }
+    }
+    else {
+      unset($form['redirect']);
+    }
+  }
+}
+
+/**
+ * Redirect settings alter
+ */
+function _seo_ui_alter_redirect_settings(&$form, $form_state, $form_id) {
+  // Change text of the auto redirect checkbox
+  if (isset($form['redirect_auto_redirect'])) {
+    $form['redirect_auto_redirect']['#title'] = t('Create redirects when published URL aliases are changed.');
+  }
+  // Hide the query string pass-through checkbox, but retain its setting value
+  if (isset($form['redirect_passthrough_querystring'])) {
+    $form['redirect_passthrough_querystring'] = array(
+      '#type' => 'hidden',
+      '#value' => 1,
+      '#weight' => 100,
+    );
+  }
+  // Changes to the redirect status select form item
+  if (isset($form['redirect_default_status_code'])) {
+    $form['redirect_default_status_code']['#title'] = t('Default redirect type');
+    $form['redirect_default_status_code']['#description'] = t('Learn more about <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#3xx_Redirection">HTTP redirect status codes</a>.');
+  }
+  // Remove the page cache checkbox
+  if (isset($form['redirect_page_cache'])) {
+    $form['redirect_page_cache'] = array(
+      '#type' => 'hidden',
+      '#value' => 0,
+      '#weight' => 100,
+    );
+  }
+  // Set the default redirect purge age to 6 months instead of never
+  if (isset($form['redirect_purge_inactive'])) {
+    if (isset($form['redirect_purge_inactive']['#options'])) {
+      // Set the default to six months if this is an option, otherwise leave it as the default from the redirect module
+      if (in_array(15552000, array_keys($form['redirect_purge_inactive']['#options']))) {
+        $form['redirect_purge_inactive']['#default_value'] = variable_get('redirect_purge_inactive', 15552000);
+      }
+    }
+    // Eliminate the description text
+    if (!empty($form['redirect_purge_inactive']['#description'])) {
+      unset($form['redirect_purge_inactive']['#description']);
+    }
+  }
+}

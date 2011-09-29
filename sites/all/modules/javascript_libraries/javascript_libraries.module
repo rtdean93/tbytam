@@ -1,0 +1,216 @@
+<?php
+
+/**
+ * @file
+ * Toggle the inclusion of Drupal system libraries. Upload and reference custom libraries as well.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function javascript_libraries_menu() {
+  $items = array();
+
+  $items['admin/config/system/javascript-libraries'] = array(
+    'title' => 'JavaScript libraries',
+    'description' => 'Manage Drupal and custom JavaScript libraries.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('javascript_libraries_default_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'javascript_libraries.admin.inc',
+  );
+
+  $items['admin/config/system/javascript-libraries/default'] = array(
+    'title' => 'Built-in',
+    'weight' => -5,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['admin/config/system/javascript-libraries/custom'] = array(
+    'title' => 'Custom',
+    'description' => 'Manage Drupal and custom javascript libraries',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('javascript_libraries_custom_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'javascript_libraries.admin.inc',
+  );
+
+  $items['admin/config/system/javascript-libraries/custom/add'] = array(
+    'title' => 'Add JavaScript',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('javascript_libraries_edit_form', array()),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'javascript_libraries.admin.inc',
+  );
+
+  $items['admin/config/system/javascript-libraries/custom/%javascript_libraries_custom/edit'] = array(
+    'title' => 'Edit JavaScript library',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('javascript_libraries_edit_form', 5),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
+    'file' => 'javascript_libraries.admin.inc',
+  );
+
+  $items['admin/config/system/javascript-libraries/custom/%javascript_libraries_custom/delete'] = array(
+    'title' => 'Edit JavaScript library',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('javascript_libraries_delete_form', 5),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
+    'file' => 'javascript_libraries.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_help()
+ */
+function javascript_libraries_help($path, $arg) {
+  $output = '';
+  switch($path) {
+    case 'admin/help#javascript_libraries':
+      $output .= '<p>' . t('You can use built-in JavaScript libraries that are registered by existing modules, or add custom Javascript libraries as uploaded files or external URLs.') . '</p>';
+      $output .= '<p>' . t('In addition, you can load a library in every page load. Deselecting a library does not prevent it from loading when required by the system. Some libraries, such as jQuery, are included in every page load.') . '</p>';
+      return $output;
+    case 'admin/config/system/javascript-libraries':
+      $output .= '<p>' . t('To include libraries in every page load, select them from the list below. The jQuery and jQuery once libraries are included by default.') . '</p>';
+      return $output;
+    case 'admin/config/system/javascript-libraries/custom':
+      $output .= '<p>' . t('To load the JavaScript library on every page load, move it to the head or footer region. Not applicable to administrative pages.') . '</p>';
+      return $output;
+    case 'admin/config/system/javascript-libraries/custom/add':
+      $output .= '<p>' . t('Use this page to add a JavaScript library or custom script to your site.') . '</p>';
+      $output .= '<p>' . t('Adding JavaScript with malicious content can compromise your site, make it difficult to use, or degrade site performance. Only upload or use external files that have been verified.') . '</p>';
+      return $output;
+    case 'admin/config/system/javascript-libraries/custom/%/edit':
+      $output .= '<p>' . t('Use this page to manage a JavaScript library or custom script in your site.') . '</p>';
+      $output .= '<p>' . t('Adding JavaScript with malicious content can compromise your site, make it difficult to use, or degrade site performance. Only upload or use external files that have been verified.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * API function - load one custom library by ID.
+ */
+function javascript_libraries_custom_load($id) {
+  $custom = variable_get('javascript_libraries_custom_libraries', array());
+  if (isset($custom[$id])) {
+    return $custom[$id];
+  }
+  return FALSE;
+}
+
+/**
+ * API function - delete one custom library by ID.
+ */
+function javascript_libraries_custom_delete($id) {
+  $library = javascript_libraries_custom_load($id);
+  switch ($library['type']) {
+    case 'external':
+      // Nothing to do.
+      break;
+    case 'file':
+      // Delete associated file.
+      $file = file_load($library['fid']);
+      file_usage_delete($file, 'javascript_libraries');
+      file_delete($file);
+      break;
+  }
+  $custom = variable_get('javascript_libraries_custom_libraries', array());
+  unset($custom[$library['id']]);
+  variable_set('javascript_libraries_custom_libraries', $custom);
+}
+
+function javascript_libraries_js_cache_clear() {
+  // Change query-strings on css/js files to enforce reload for all users.
+  _drupal_flush_css_js();
+  drupal_clear_js_cache();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function javascript_libraries_theme() {
+  return array(
+    'javascript_libraries_library_fieldset' => array(
+      'file' => 'javascript_libraries.admin.inc',
+      'render element' => 'form',
+    ),
+    'javascript_libraries_custom_form' => array(
+      'file' => 'javascript_libraries.admin.inc',
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Implements hook_init().
+ */
+function javascript_libraries_init() {
+  if (path_is_admin(current_path())) {
+    // Don't load any custom JS on admin pages.
+    return;
+  }
+  // Make sure jquery always loads.
+  drupal_add_library('system', 'jquery', TRUE);
+  $libraries = variable_get('javascript_libraries_drupal_libraries', array());
+  foreach ($libraries as $key => $info) {
+    if (is_array($info) && !empty($info['library']) && !empty($info['module'])) {
+      drupal_add_library($info['module'], $info['library']);
+    }
+  }
+
+  $custom = variable_get('javascript_libraries_custom_libraries', array());
+  // Add a variable offset so use-added scripts come after theme scripts.
+  $offset = variable_get('javascript_libraries_custom_weight_offset', 100);
+  foreach ($custom as $library) {
+    if ($library['scope'] == 'disabled') {
+      continue;
+    }
+    $options = array();
+    $options['type'] = $library['type'];
+    $options['scope'] = $library['scope'];
+    $options['weight'] = $library['weight'] + $offset;
+    $options['group'] = JS_THEME;
+    $options['every_page'] = TRUE;
+    drupal_add_js($library['uri'], $options);
+  }
+}
+
+/**
+ * Implements hook_library().
+ */
+function javascript_libraries_library() {
+  // This library is a rollup of system's included jQuery UI Effects scripts.
+  // It is just a set of dependencies. It does not introduce new code.
+  $libraries['effects.comprehensive'] = array(
+    'title' => 'jQuery UI: Transition and animation effects',
+    'website' => 'http://jqueryui.com/demos/effect/',
+    'version' => '1.8.7',
+    'js' => array(
+      'misc/ui/jquery.effects.core.min.js' => array('group' => JS_LIBRARY, 'weight' => -9),
+    ),
+    'dependencies' => array(
+      array('system', 'effects'),
+      array('system', 'effects.blind'),
+      array('system', 'effects.bounce'),
+      array('system', 'effects.clip'),
+      array('system', 'effects.drop'),
+      array('system', 'effects.explode'),
+      array('system', 'effects.fade'),
+      array('system', 'effects.fold'),
+      array('system', 'effects.highlight'),
+      array('system', 'effects.pulsate'),
+      array('system', 'effects.scale'),
+      array('system', 'effects.shake'),
+      array('system', 'effects.slide'),
+      array('system', 'effects.transfer'),
+    ),
+  );
+
+  return $libraries;
+}
